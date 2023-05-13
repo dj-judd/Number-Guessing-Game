@@ -42,5 +42,7 @@ while guess != randomNum:
                 print("You got it!!! And only in " + format(tryCounter) + " attempts! Amazing!!")
 
     # When the input is not an int.
+    elif guess.lstrip("-").isdigit() and int(guess) < 0:
+        print("That is a negative number bro")
     else:
-        print("Silly Billy...that's not a number!\nOr it's a negative...either way, try again!\n")
+        print("Silly Billy...that's not a number! Try again!\n")
