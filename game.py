@@ -1,23 +1,50 @@
-"""A number-guessing game."""
 import random
 
-# Random number generation
-randomNum = random.randint(1,100)
+def menu(gameVersion, firstStart):
+    gameVersionIntro = "Guessing Game v{}".format(gameVersion)"
 
-tryCounter = 0
+    if menuSelection = 0 and firstStart = True:
+    # Opening Dialogue
+    print("\n" + "~" * len(gameVersionIntro) +"\n" + gameVersionIntro + "\n" + "~" * len(gameVersionIntro) +"\n")
+
+
+    print("""Menu:
+            1) Play
+            2) Options
+            3) Exit""")
+    
+def game():
+    username = input("Hello, what is your name? ")
+    print ("Hello " + username + ", I'm thinking of a number between 1 and 100.")
+    print ("Try to guess my number...if you dare!\n")
+
+def userInputIsValid():
+
+    try:
+        guess = int(input("What is your guess? "))
+    
+    except ValueError:
+        return False
+
+
+    # Random number generation
+    randomNum = random.randint(1,100)
+
+gameVersion = 0.1
+firstStart = True
+
+menuSelection = 0
+
+menu(gameVersion, firstStart)
 
 # For testing
 # print("\nThis the secret number for testing:\n" + format(randomNum) + "\n")
 
-# Opening Dialogue 
-username = input("Hello, what is your name? ")
-print ("Hello " + username + ", I'm thinking of a number between 1 and 100.")
-print ("Try to guess my number...if you dare!\n")
 
 guess = 0
 while guess != randomNum:
 
-    guess = input("What is your guess? ")
+    userInputIsValid()
 
     # Input sanitation
     # Is it an int?
@@ -46,3 +73,12 @@ while guess != randomNum:
         print("That is a negative number bro")
     else:
         print("Silly Billy...that's not a number! Try again!\n")
+
+
+
+    
+
+
+
+
+
