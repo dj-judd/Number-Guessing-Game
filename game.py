@@ -15,7 +15,6 @@ def menu(gameVersion, debugMode, firstStart, defaultRange, defaultGuessLimit):
 3) Options
 5) Exit"""
 
-
     while menuSelection == 0:
 
         if firstStart:
@@ -23,27 +22,21 @@ def menu(gameVersion, debugMode, firstStart, defaultRange, defaultGuessLimit):
             print("\n" + "~" * len(gameVersionIntro) +"\n" + gameVersionIntro + "\n" + "~" * len(gameVersionIntro))
 
         print("\n" + menuText)
-        menuSelection = input("\nChoose an option: ")
+        menuSelection = getValidInt("\nChoose an option: ")
 
-        if isValidInt(menuSelection):
-            menuSelection = int(menuSelection)
-
-            if menuSelection == 1:
-                menuSelection = 0
-                playSoloGame(rangeStart, rangeEnd, guessLimit, debugMode)
-            elif menuSelection == 2:
-                menuSelection = 0
-                playVsCompGame(rangeStart, rangeEnd, guessLimit, debugMode)
-            elif menuSelection == 3:
-                menuSelection = 0
-                rangeStart, rangeEnd, guessLimit = optionsMenu(defaultRange, defaultGuessLimit)
-            elif menuSelection == 5:
-                print("Exiting. Have a nice day!\n")
-                break
-            else:
-                print("\n" + getNotValidErrorMessage())
-                menuSelection = 0
-        else: 
+        if menuSelection == 1:
+            menuSelection = 0
+            playSoloGame(rangeStart, rangeEnd, guessLimit, debugMode)
+        elif menuSelection == 2:
+            menuSelection = 0
+            playVsCompGame(rangeStart, rangeEnd, guessLimit, debugMode)
+        elif menuSelection == 3:
+            menuSelection = 0
+            rangeStart, rangeEnd, guessLimit = optionsMenu(defaultRange, defaultGuessLimit)
+        elif menuSelection == 5:
+            print("Exiting. Have a nice day!\n")
+            break
+        else:
             print("\n" + getNotValidErrorMessage())
             menuSelection = 0
 
@@ -55,7 +48,6 @@ def optionsMenu(defaultRange, defaultGuessLimit):
 
     menuSelection = 0
 
-
     while menuSelection == 0:
 
         optionsMenuText = """Options:
@@ -64,59 +56,39 @@ def optionsMenu(defaultRange, defaultGuessLimit):
 5) Back""".format(rangeStart, rangeEnd, guessLimit)
 
         print("\n" + optionsMenuText)
-        menuSelection = input("\nChoose an option: ")
+        menuSelection = getValidInt("\nChoose an option: ")
 
-        if isValidInt(menuSelection):
-            menuSelection = int(menuSelection)
+        if menuSelection == 1:
+            print("\nChange the Range")
+            rangeStart = getValidInt("What would you like the start of the range to be? ")
+            rangeEnd = getValidInt("What would you like the end of the range to be? ")
 
-            if menuSelection == 1:
-                print("\nChange the Range")
-                rangeStart = input("What would you like the start of the range to be? ")
-
-                if isValidInt(rangeStart):
-                    rangeStart = int(rangeStart)
-
-                rangeEnd = input("What would you like the end of the range to be? ")
-
-                if isValidInt(rangeEnd):
-                    rangeEnd = int(rangeEnd)
-
-                    if rangeStart >= rangeEnd:
-                        print("\n" + getNotValidErrorMessage())
-                        print("The start of the range can't be less than the end. Reseting to Defaults")
-                        rangeStart = defaultRange[0]
-                        rangeEnd = defaultRange[1]
-                        menuSelection = 0
-                    menuSelection = 0
-
-            elif menuSelection == 2:
-                guessLimit = input("\nWhat do you want the new Guess Limit to be? ")
-
-                if isValidInt(guessLimit):
-                    guessLimit = int(guessLimit)
-
-                    if guessLimit <= 0:
-                        print("...I don't think you can guess negative times...")
-                        guessLimit = 0
-                        menuSelection = 0
-                        
-                    else:
-                        print("\nYou got it! New Guess Limit is \033[1m{}\033[0m".format(guessLimit))
-                        menuSelection = 0
-                else:
-                    print(getNotValidErrorMessage())
-                    menuSelection = 0
-
-            elif menuSelection == 5:
-                return rangeStart, rangeEnd, guessLimit
-
-            else:
-                print(getNotValidErrorMessage())
+            if rangeStart >= rangeEnd:
+                print("\n" + getNotValidErrorMessage())
+                print("The start of the range can't be less than the end. Reseting to Defaults")
+                rangeStart = defaultRange[0]
+                rangeEnd = defaultRange[1]
                 menuSelection = 0
-        else: 
+            menuSelection = 0
+
+        elif menuSelection == 2:
+            guessLimit = getValidInt("\nWhat do you want the new Guess Limit to be? ")
+
+            if guessLimit <= 0:
+                print("...I don't think you can guess negative times...")
+                guessLimit = defaultGuessLimit
+                menuSelection = 0
+            else:
+                print("\nYou got it! New Guess Limit is \033[1m{}\033[0m".format(guessLimit))
+                menuSelection = 0
+
+        elif menuSelection == 5:
+            return rangeStart, rangeEnd, guessLimit
+
+        else:
             print(getNotValidErrorMessage())
             menuSelection = 0
-    
+
     return rangeStart, rangeEnd, guessLimit
 
 
@@ -143,34 +115,30 @@ def playSoloGame(rangeStart, rangeEnd, guessLimit, debugMode):
 
         while guess != randomNum and guessLimit >= guessCounter:
 
-            guess = input("What is your guess? ")
+            guess = getValidInt("What is your guess? ")
 
-            if isValidInt(guess):
-                guess = int(guess)
+            if guess < rangeStart or guess > rangeEnd:
+                print("That's out of bounds. Remember between {} & {}.\n".format(rangeStart, rangeEnd))
+                guessCounter += 1
 
-                if guess < rangeStart or guess > rangeEnd:
-                    print("That's out of bounds. Remember between {} & {}.\n".format(rangeStart, rangeEnd))
+            else:
+                if guess > randomNum:
+                    print("That is too high, try again.\n")
+                    guessCounter += 1
+
+                elif guess < randomNum:
+                    print("That is too low, try again.\n")
                     guessCounter += 1
 
                 else:
-                    if guess > randomNum:
-                        print("That is too high, try again.\n")
-                        guessCounter += 1
-
-                    elif guess < randomNum:
-                        print("That is too low, try again.\n")
-                        guessCounter += 1
-
-                    else:
-                        print("\nYou got it!!! And only in {} attempts! Amazing!!\n".format(guessCounter))
-                        guessCounter += 1
-            else:
-                print(getNotValidErrorMessage())
+                    print("\nYou got it!!! And only in {} attempts! Amazing!!\n".format(guessCounter))
+                    guessCounter += 1
         
         replayed = True
 
         if not replay():
             break
+
 
 
 def playVsCompGame(rangeStart, rangeEnd, guessLimit, debugMode):
@@ -200,31 +168,26 @@ def playVsCompGame(rangeStart, rangeEnd, guessLimit, debugMode):
         # Player's turn to guess
         while guess != trueRandomNum and guessLimit >= guessCounter:
 
-            guess = input("What is your guess? ")
+            guess = getValidInt("What is your guess? ")
 
-            if isValidInt(guess):
-                guess = int(guess)
+            if guess < rangeStart or guess > rangeEnd:
+                print("That's out of bounds. Remember between {} & {}.\n".format(rangeStart, rangeEnd))
+                guessCounter += 1
 
-                if guess < rangeStart or guess > rangeEnd:
-                    print("That's out of bounds. Remember between {} & {}.\n".format(rangeStart, rangeEnd))
+            else:
+                if guess > trueRandomNum:
+                    print("That is too high.\n")
+                    guessCounter += 1
+
+                elif guess < trueRandomNum:
+                    print("That is too low.\n")
                     guessCounter += 1
 
                 else:
-                    if guess > trueRandomNum:
-                        print("That is too high.\n")
-                        guessCounter += 1
+                    print("\nWow!!! You beat me! And only in {} attempts! Amazing!!\n".format(guessCounter))
+                    break  # Break the loop if the player guesses correctly
 
-                    elif guess < trueRandomNum:
-                        print("That is too low.\n")
-                        guessCounter += 1
-
-                    else:
-                        print("\nWow!!! You beat me! And only in {} attempts! Amazing!!\n".format(guessCounter))
-                        break  # Break the loop if the player guesses correctly
-            else:
-                print(getNotValidErrorMessage())
-
-        # Computer's turn to guess
+            # Computer's turn to guess
             computerGuess = (compRangeStart + compRangeEnd) // 2
             print("My guess is {}.".format(computerGuess))
 
@@ -245,14 +208,24 @@ def playVsCompGame(rangeStart, rangeEnd, guessLimit, debugMode):
             break
 
 
-def isValidInt(input):
 
-    try:
-        input = int(input)
-        return True
+# def isValidInt(input):
 
-    except ValueError:
-        return False
+#     try:
+#         input = int(input)
+#         return True
+
+#     except ValueError:
+#         return False
+    
+
+def getValidInt(prompt):
+    while True:
+        try:
+            value = int(input(prompt))
+            return value
+        except ValueError:
+            print("\x1b[6;30;41m" + "!!! Error: Not a valid integer! ¡¡¡" + "\x1b[0m")
     
 
 def replay():
