@@ -111,7 +111,7 @@ def playSoloGame(rangeStart, rangeEnd, guessLimit, debugMode):
 
         # For testing
         if debugMode:
-            print("\x1b[6;30;41m" + "This the secret number for testing: {}".format(randomNum)+ "\x1b[0m\n")
+            print("\x1b[1;30;41m" + "\nThis the secret number for testing: " + "\x1b[0m" + "\x1b[1;30;41;5m" + "{}".format(randomNum) + "\x1b[0m\n")
 
         while guess != randomNum and guessLimit >= guessCounter:
 
@@ -163,7 +163,9 @@ def playVsCompGame(rangeStart, rangeEnd, guessLimit, debugMode):
 
         # For testing
         if debugMode:
-            print("\x1b[6;30;41m" + "\nThis the secret number for testing: {}".format(trueRandomNum)+ "\x1b[0m\n")
+            print("\x1b[1;30;41m" + "\nThis the secret number for testing: " + "\x1b[0m" + "\x1b[1;30;41;5m" + "{}".format(trueRandomNum) + "\x1b[0m\n")
+
+
 
         # Player's turn to guess
         while guess != trueRandomNum and guessLimit >= guessCounter:
@@ -219,13 +221,14 @@ def playVsCompGame(rangeStart, rangeEnd, guessLimit, debugMode):
 #         return False
     
 
-def getValidInt(prompt):
+def getValidInt(promptString):
     while True:
         try:
-            value = int(input(prompt))
-            return value
+            valueEntered = int(input(promptString))
+            return valueEntered
         except ValueError:
-            print("\x1b[6;30;41m" + "!!! Error: Not a valid integer! ¡¡¡" + "\x1b[0m")
+            print("\x1b[1;30;41m" + "!!! Error: Not a valid integer! ¡¡¡" + "\x1b[0m\n")
+
     
 
 def replay():
