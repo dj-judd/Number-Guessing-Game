@@ -84,8 +84,8 @@ def optionsMenu(defaultRange, defaultGuessLimit):
                     if rangeStart >= rangeEnd:
                         print("\n" + getNotValidErrorMessage())
                         print("The start of the range can't be less than the end. Reseting to Defaults")
-                        rangeStart == defaultRange[0]
-                        rangeEnd == defaultRange[1]
+                        rangeStart = defaultRange[0]
+                        rangeEnd = defaultRange[1]
                         menuSelection = 0
                     menuSelection = 0
 
@@ -239,10 +239,10 @@ def inputIsValidInt(input):
 def replay():
     while True:
         replayResponse = input("Play again? (Y/n) ").lower().strip()
-        if replayResponse in ["", "y", "yes"]:  # Added "" for the case when user just hits enter
+        if replayResponse.startswith('y') or replayResponse == '':  # Added "" for the case when user just hits enter
             print("\n" + "~" * 50 + "\n\n\n")
             return True
-        elif replayResponse in ["n", "no"]:
+        elif replayResponse.startswith('n'):
             return False
         else:
             print("Invalid input. Please enter 'yes' or 'no'.")
