@@ -25,7 +25,7 @@ def menu(gameVersion, debugMode, firstStart, defaultRange, defaultGuessLimit):
         print("\n" + menuText)
         menuSelection = input("\nChoose an option: ")
 
-        if inputIsValidInt(menuSelection):
+        if isValidInt(menuSelection):
             menuSelection = int(menuSelection)
 
             if menuSelection == 1:
@@ -66,19 +66,19 @@ def optionsMenu(defaultRange, defaultGuessLimit):
         print("\n" + optionsMenuText)
         menuSelection = input("\nChoose an option: ")
 
-        if inputIsValidInt(menuSelection):
+        if isValidInt(menuSelection):
             menuSelection = int(menuSelection)
 
             if menuSelection == 1:
                 print("\nChange the Range")
                 rangeStart = input("What would you like the start of the range to be? ")
 
-                if inputIsValidInt(rangeStart):
+                if isValidInt(rangeStart):
                     rangeStart = int(rangeStart)
 
                 rangeEnd = input("What would you like the end of the range to be? ")
 
-                if inputIsValidInt(rangeEnd):
+                if isValidInt(rangeEnd):
                     rangeEnd = int(rangeEnd)
 
                     if rangeStart >= rangeEnd:
@@ -92,7 +92,7 @@ def optionsMenu(defaultRange, defaultGuessLimit):
             elif menuSelection == 2:
                 guessLimit = input("\nWhat do you want the new Guess Limit to be? ")
 
-                if inputIsValidInt(guessLimit):
+                if isValidInt(guessLimit):
                     guessLimit = int(guessLimit)
 
                     if guessLimit <= 0:
@@ -145,7 +145,7 @@ def playSoloGame(rangeStart, rangeEnd, guessLimit, debugMode):
 
             guess = input("What is your guess? ")
 
-            if inputIsValidInt(guess):
+            if isValidInt(guess):
                 guess = int(guess)
 
                 if guess < rangeStart or guess > rangeEnd:
@@ -180,10 +180,13 @@ def playVsCompGame(rangeStart, rangeEnd, guessLimit, debugMode):
 
         # Random number generation
         trueRandomNum = random.randint(rangeStart,rangeEnd)
-        opponentsRandomNum = random.randint(rangeStart,rangeEnd)
+
+        compRangeStart = rangeStart
+        compRangeEnd = rangeEnd
 
         guessCounter = 1
         guess = 0
+        computerGuess = 0
 
         if not replayed:
             username = input("Hello, I'm a computer and I'll be your opponent today. What is your name? ")
@@ -194,11 +197,12 @@ def playVsCompGame(rangeStart, rangeEnd, guessLimit, debugMode):
         if debugMode:
             print("\x1b[6;30;41m" + "\nThis the secret number for testing: {}".format(trueRandomNum)+ "\x1b[0m\n")
 
+        # Player's turn to guess
         while guess != trueRandomNum and guessLimit >= guessCounter:
 
             guess = input("What is your guess? ")
 
-            if inputIsValidInt(guess):
+            if isValidInt(guess):
                 guess = int(guess)
 
                 if guess < rangeStart or guess > rangeEnd:
@@ -207,18 +211,33 @@ def playVsCompGame(rangeStart, rangeEnd, guessLimit, debugMode):
 
                 else:
                     if guess > trueRandomNum:
-                        print("That is too high, try again.\n")
+                        print("That is too high.\n")
                         guessCounter += 1
 
                     elif guess < trueRandomNum:
-                        print("That is too low, try again.\n")
+                        print("That is too low.\n")
                         guessCounter += 1
 
                     else:
-                        print("\nYou got it!!! And only in {} attempts! Amazing!!\n".format(guessCounter))
-                        guessCounter += 1
+                        print("\nWow!!! You beat me! And only in {} attempts! Amazing!!\n".format(guessCounter))
+                        break  # Break the loop if the player guesses correctly
             else:
                 print(getNotValidErrorMessage())
+
+        # Computer's turn to guess
+            computerGuess = (compRangeStart + compRangeEnd) // 2
+            print("My guess is {}.".format(computerGuess))
+
+            if computerGuess > trueRandomNum:
+                print("My guess is too high! I'll guess lower next time.\n")
+                compRangeEnd = computerGuess - 1
+            elif computerGuess < trueRandomNum:
+                print("My guess is too low! I'll guess higher next time.\n")
+                compRangeStart = computerGuess + 1
+            else:
+                print("I've guessed it! The number was {}.".format(computerGuess))
+                print("\033[1;31;5m\033[48mYou Lose\033[0m\n")
+                break  # Break the loop if the computer guesses correctly
         
         replayed = True
 
@@ -226,7 +245,7 @@ def playVsCompGame(rangeStart, rangeEnd, guessLimit, debugMode):
             break
 
 
-def inputIsValidInt(input):
+def isValidInt(input):
 
     try:
         input = int(input)
@@ -238,7 +257,7 @@ def inputIsValidInt(input):
 
 def replay():
     while True:
-        replayResponse = input("Play again? (Y/n) ").lower().strip()
+        replayResponse = input("Would you like to play again? (Y/n) ").lower().strip()
         if replayResponse.startswith('y') or replayResponse == '':  # Added "" for the case when user just hits enter
             print("\n" + "~" * 50 + "\n\n\n")
             return True
@@ -267,7 +286,7 @@ def getNotValidErrorMessage():
     return "\x1b[6;30;41m" + "!!! Error: Not a valid option! ¡¡¡" + "\x1b[0m"
 
 def main():
-    gameVersion = 0.4
+    gameVersion = 0.6
     firstStart = True
 
     defaultRange = [0, 100]
